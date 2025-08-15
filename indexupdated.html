@@ -5,9 +5,9 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
 <script>
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
+    apiKey: "AIzaSyD8yp8Msml2qtmrf6yq6XIr6vOoSXU7Ow0",
+    authDomain: "schampionsystem.firebaseapp.com",
+    projectId: "schampionsystem",
     // other config...
   };
   firebase.initializeApp(firebaseConfig);
@@ -1039,26 +1039,41 @@
             const userName = document.getElementById('user-name');
             
             // Sample user database
-            const users = [
-                { 
-                    id: 1, 
-                    username: 'champion', 
-                    password: 'champion', 
-                    name: 'Andy Lim', 
-                    department: 'ET1 AB', 
-                    role: 'champion',
-                    initials: 'AL'
-                },
-                { 
-                    id: 2, 
-                    username: 'admin', 
-                    password: 'admin', 
-                    name: 'Admin User', 
-                    department: 'Management', 
-                    role: 'admin',
-                    initials: 'AU'
-                }
-            ];
+            const users = <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD8yp8Msml2qtmrf6yq6XIr6vOoSXU7Ow0",
+    authDomain: "schampionsystem.firebaseapp.com",
+    projectId: "schampionsystem",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        alert("Login successful!");
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('app-container').style.display = 'block';
+
+        if (user.email === "admin@example.com") {
+          document.getElementById('admin-link').style.display = 'block';
+        }
+      })
+      .catch((error) => {
+        alert("Login failed: " + error.message);
+      });
+  });
+</script>
+;
             
             // Current user variable
             let currentUser = null;
@@ -1248,3 +1263,4 @@
 </body>
 
 </html>
+
