@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>5S Champion Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="firebase-config.js"></script>
+  <script defer src="dashboard.js"></script>
+</head>
+<body>
+  <header>
+    <h1>🏆 5S Champion Monitoring System</h1>
+    <button id="logoutBtn">Logout</button>
+  </header>
+
+  <main>
+    <section id="userInfo">
+      <p><strong>Logged in as:</strong> <span id="userEmail"></span></p>
+      <p><strong>Role:</strong> <span id="userRole"></span></p>
+    </section>
+
+    <section id="championData">
+      <h2>Champion Performance</h2>
+      <div id="championList">Loading data...</div>
+    </section>
+
+    <section id="adminTools" style="display: none;">
+      <h2>🛠 Admin Panel</h2>
+      <button id="exportPDF">Export PDF</button>
+      <button id="postAnnouncement">Post Announcement</button>
+    </section>
+  </main>
+</body>
+</html>
