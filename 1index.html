@@ -1,5 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+    <script>
+  function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // Redirect or show dashboard
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  }
+</script>
+
+    <div id="login-container">
+  <h2>Login</h2>
+  <input type="email" id="email" placeholder="Email" />
+  <input type="password" id="password" placeholder="Password" />
+  <button onclick="login()">Login</button>
+</div>
+
 <head>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
@@ -1303,5 +1324,6 @@
 </body>
 
 </html>
+
 
 
