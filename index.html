@@ -3,146 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>5S Champion Monitoring System</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f2f5;
-      margin: 0;
-      padding: 0;
-    }
-    #login-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 40px;
-      max-width: 400px;
-      margin: 80px auto;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    #login-container h2 {
-      margin-bottom: 20px;
-      color: #333;
-    }
-    #login-container input,
-    #login-container select,
-    #login-container button {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-    #login-container button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    #login-container button:hover {
-      background-color: #0056b3;
-    }
-    #app-content {
-      display: none;
-      padding: 20px;
-    }
-    #admin-link {
-      display: none;
-      margin-top: 10px;
-      color: red;
-    }
-  </style>
+  <title>5S Champion Login</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div id="login-container">
+    <h2>Login to 5S Champion System</h2>
+    <form id="login-form">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <select id="role" required>
+        <option value="">Select Role</option>
+        <option value="champion">5S Champion</option>
+        <option value="admin">Administrator</option>
+      </select>
+      <button type="submit">Login</button>
+    </form>
+    <p id="error-message" style="color: red;"></p>
+  </div>
 
-<!-- Login Form -->
-<div id="login-container">
-  <h2>Login to Your Account</h2>
-  <form id="login-form">
-    <input type="text" id="login-username" placeholder="Username" required />
-    <input type="password" id="login-password" placeholder="Password" required />
-    <select id="login-role" required>
-      <option value="">Select Role</option>
-      <option value="champion">5S Champion</option>
-      <option value="admin">Administrator</option>
-    </select>
-    <button type="submit">Login</button>
-  </form>
-  <p>Demo: Use <strong>admin</strong> or <strong>champion</strong> for both username and password</p>
-</div>
+  <script type="module">
+    import { auth } from './firebase-config.js';
+    import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-<!-- Dashboard -->
-<div id="app-content">
-  <h2>Welcome to the 5S Champion Dashboard</h2>
-  <p id="user-info"></p>
-  <button id="logoutBtn">Logout</button>
-  <div id="admin-link">🔒 Admin Panel Access</div>
-  <!-- Add your dashboard content below -->
-</div>
+    const loginForm = document.getElementById('login-form');
+    const errorMessage = document.getElementById('error-message');
 
-<script>
-  const loginContainer = document.getElementById('login-container');
-  const appContent = document.getElementById('app-content');
-  const loginForm = document.getElementById('login-form');
-  const logoutBtn = document.getElementById('logoutBtn');
-  const adminLink = document.getElementById('admin-link');
-  const userInfo = document.getElementById('user-info');
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const role = document.getElementById('role').value;
 
-  const users = [
-    { username: 'admin', password: 'admin', role: 'admin', name: 'Admin User', department: 'HQ' },
-    { username: 'champion', password: 'champion', role: 'champion', name: 'Champion User', department: 'Electrolysis' }
-  ];
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-  let currentUser = null;
+        // Save role locally (you can also store this in Firestore)
+        localStorage.setItem('userRole', role);
+        localStorage.setItem('userEmail', user.email);
 
-  function showApp() {
-    loginContainer.style.display = 'none';
-    appContent.style.display = 'block';
-    userInfo.textContent = `${currentUser.name} (${currentUser.department})`;
-    if (currentUser.role === 'admin') {
-      adminLink.style.display = 'block';
-    }
-  }
-
-  loginForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const username = document.getElementById('login-username').value;
-    const password = document.getElementById('login-password').value;
-    const role = document.getElementById('login-role').value;
-
-    const user = users.find(u => u.username === username && u.password === password && u.role === role);
-    if (user) {
-      currentUser = user;
-      localStorage.setItem('5s_currentUser', JSON.stringify(user));
-      showApp();
-    } else {
-      alert('Invalid credentials. Please try again.');
-    }
-  });
-
-  logoutBtn.addEventListener('click', function() {
-    if (confirm('Are you sure you want to logout?')) {
-      localStorage.removeItem('5s_currentUser');
-      currentUser = null;
-      appContent.style.display = 'none';
-      loginContainer.style.display = 'flex';
-      loginForm.reset();
-      adminLink.style.display = 'none';
-    }
-  });
-
-  window.onload = function() {
-    const storedUser = localStorage.getItem('5s_currentUser');
-    if (storedUser) {
-      currentUser = JSON.parse(storedUser);
-      showApp();
-    }
-  };
-</script>
-
+        // Redirect to dashboard
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        errorMessage.textContent = error.message;
+      }
+    });
+  </script>
 </body>
 </html>
